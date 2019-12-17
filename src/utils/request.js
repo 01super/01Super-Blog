@@ -15,7 +15,10 @@ export const get = (url, params = {}) => {
     //发送get请求
     fetch(`${url}?${paramsStr}`, {
       //请求的配置
-      method: "GET"
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json"
+      }
     })
       .then(response => response.json())
       //得到结果

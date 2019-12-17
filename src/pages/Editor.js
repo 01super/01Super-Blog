@@ -26,6 +26,7 @@ const ShowMark = styled.div`
 const Editor = props => {
   const [value, setValue] = useState("");
   const [title, setTltle] = useState("");
+  const [type, setType] = useState("");
   const [description, setDescription] = useState("");
   const ShowMarkRef = useRef(null);
 
@@ -36,7 +37,12 @@ const Editor = props => {
 
   function handleSubmit() {
     if (title && description && value) {
-      post("/api/uploadArticle", { title, description, value }).then(res => {
+      post("/api/addArticle", {
+        title,
+        describe: description,
+        type,
+        main: value
+      }).then(res => {
         if (res.code === "Y") {
           console.log("上传成功");
         }
@@ -52,7 +58,7 @@ const Editor = props => {
           type="text"
           spellCheck="false"
           onChange={v => {
-            setTltle(v);
+            setTltle(v.target.value);
           }}
         />
         简述：
@@ -60,7 +66,15 @@ const Editor = props => {
           type="text"
           spellCheck="false"
           onChange={v => {
-            setDescription(v);
+            setDescription(v.target.value);
+          }}
+        />
+        类型：
+        <input
+          type="text"
+          spellCheck="false"
+          onChange={v => {
+            setType(v.target.value);
           }}
         />
       </header>
