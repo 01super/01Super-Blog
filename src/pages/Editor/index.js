@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import styled from "@emotion/styled";
 import marked from "marked";
-import { post } from "../utils/request";
+import { post } from "../../utils/request";
 
 const EdotorWrap = styled.div`
   padding: 20px;

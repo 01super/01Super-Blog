@@ -23,13 +23,7 @@ export const get = (url, params = {}) => {
       .then(response => response.json())
       //得到结果
       .then(data => {
-        if (data.code === 0) {
-          //'请求成功'
-          resolve(data);
-        } else {
-          //请求失败
-          console.log("请求失败");
-        }
+        resolve(data);
       })
       .catch(error => {
         //'请求失败'
@@ -47,17 +41,11 @@ export const post = (url, params = {}) => {
     })
       .then(response => response.json())
       .then(data => {
-        if (data.code === 0) {
-          //请求成功
-          resolve(data);
-        } else {
-          //请求失败
-          console.log("请求失败");
-        }
+        resolve(data);
       })
       .catch(error => {
         //请求失败
-        console.log("请求失败");
+        console.log("请求失败:", error);
       });
   });
 };
