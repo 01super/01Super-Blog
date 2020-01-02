@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { withRouter } from "react-router-dom";
 import request from "../../utils/request";
 import marked from "marked";
@@ -14,14 +14,32 @@ const Detial = props => {
   const { match } = props;
   const { id } = match.params;
   const ShowMarkRef = useRef(null);
+  const [info, setInfo] = useState(null);
 
   useEffect(() => {
-    request.get("api/detial", { id }).then(res => {
-      ShowMarkRef.current.innerHTML = marked(res.Main);
+    request.get("/api/getBlog", { id }).then(res => {
+      if (res.code === "Y") {
+        ShowMarkRef.current.innerHTML = marked(res.data.content);
+        setInfo(res.data);
+      }else{
+        setInfo(null)
+      }
     });
   }, []);
 
-  return <ShowMark ref={ShowMarkRef}></ShowMark>;
+  return (
+    <>
+      {info === null ? null : (
+        <>
+          <p>标题：{info.title}</p>
+          <p>描述：{info.describe}</p>
+          <p>作者：{info.author}</p>
+          <p>时间：{new Date(info.utime).toLocaleDateString()}</p>
+        </>
+      )}
+      <ShowMark ref={ShowMarkRef}></ShowMark>
+    </>
+  )
 };
 
 export default withRouter(Detial);

@@ -5,8 +5,12 @@ import request from "../../utils/request";
 const List = props => {
   const [list, setList] = useState([]);
   useEffect(() => {
-    request.get("api/list").then(res => {
-      setList(res);
+    request.get("api/getList").then(res => {
+      if (res.code === "Y") {
+        setList(res.data);
+      } else {
+        setList([]);
+      }
     });
   }, []);
   return (
@@ -14,8 +18,8 @@ const List = props => {
       <ul>
         {list.map(v => (
           <li>
-            <Link to={`/detial/${v.ID}`}>
-              标题：{v.Title}; 描述：{v.Describe}；内容：{v.Main}
+            <Link to={`/detial/${v.id}`}>
+              标题：{v.title}; 描述：{v.describe}；作者：{v.author}；时间：{new Date(v.utime).toLocaleDateString()}
             </Link>
           </li>
         ))}

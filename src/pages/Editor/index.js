@@ -28,20 +28,21 @@ const Editor = props => {
   const [title, setTltle] = useState("");
   const [type, setType] = useState("");
   const [description, setDescription] = useState("");
+  const [author, setAuthor] = useState("");
   const ShowMarkRef = useRef(null);
 
   useEffect(() => {
-    console.log(value);
     ShowMarkRef.current.innerHTML = marked(value);
   }, [value]);
 
   function handleSubmit() {
     if (title && description && value) {
-      post("/api/addArticle", {
+      post("/api/addBlog", {
         title,
         describe: description,
-        type,
-        main: value
+        sort: type,
+        author,
+        content: value
       }).then(res => {
         if (res.code === "Y") {
           console.log("上传成功");
@@ -69,12 +70,20 @@ const Editor = props => {
             setDescription(v.target.value);
           }}
         />
-        类型：
+        分类：
         <input
           type="text"
           spellCheck="false"
           onChange={v => {
             setType(v.target.value);
+          }}
+        />
+        作者：
+        <input
+          type="text"
+          spellCheck="false"
+          onChange={v => {
+            setAuthor(v.target.value);
           }}
         />
       </header>
