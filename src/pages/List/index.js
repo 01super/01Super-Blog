@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import request from "../../utils/request";
+import { List, Avatar } from "antd";
 
-const List = props => {
+const BlogList = props => {
   const [list, setList] = useState([]);
   useEffect(() => {
     request.get("api/getList").then(res => {
@@ -15,17 +16,27 @@ const List = props => {
   }, []);
   return (
     <div>
-      <ul>
-        {list.map(v => (
-          <li>
-            <Link to={`/detial/${v.id}`}>
-              标题：{v.title}; 描述：{v.describe}；作者：{v.author}；时间：{new Date(v.utime).toLocaleDateString()}
-            </Link>
-          </li>
-        ))}
-      </ul>
+      <List
+        itemLayout="horizontal"
+        dataSource={list}
+        renderItem={item => (
+          <List.Item key={item.id}>
+            <List.Item.Meta
+              avatar={
+                <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
+              }
+              title={
+                <Link to={`/detial/${item.id}`}>
+                  {item.title}&nbsp;&nbsp;{item.author}
+                </Link>
+              }
+              description={item.describe}
+            />
+          </List.Item>
+        )}
+      />
     </div>
   );
 };
 
-export default List;
+export default BlogList;

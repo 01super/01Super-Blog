@@ -34,6 +34,7 @@ const Detial = props => {
           <p>标题：{info.title}</p>
           <p>描述：{info.describe}</p>
           <p>作者：{info.author}</p>
+          <p>作者：{info.sort}</p>
           <p>时间：{new Date(info.utime).toLocaleDateString()}</p>
         </>
       )}

@@ -2,102 +2,106 @@ import React, { useEffect, useState, useRef } from "react";
 import styled from "@emotion/styled";
 import marked from "marked";
 import { post } from "../../utils/request";
+import { Col, Row, Input, Form, Button, message } from "antd";
 
 const EdotorWrap = styled.div`
-  padding: 20px;
-  border: 1px solid #ccc;
-  overflow: hidden;
+  margin: 20px 0;
 `;
 
 const TextInput = styled.div`
-  float: left;
-  height: 500px;
+  height: 600px;
   border: 1px solid #ccc;
-  width: 500px;
+  outline: none;
 `;
 
 const ShowMark = styled.div`
-  height: 500px;
+  height: 600px;
   border: 1px solid #ccc;
-  width: 500px;
-  float: left;
 `;
 
 const Editor = props => {
-  const [value, setValue] = useState("");
+  const [content, setContent] = useState("");
   const [title, setTltle] = useState("");
-  const [type, setType] = useState("");
+  const [sort, setSort] = useState("");
   const [description, setDescription] = useState("");
   const [author, setAuthor] = useState("");
   const ShowMarkRef = useRef(null);
 
   useEffect(() => {
-    ShowMarkRef.current.innerHTML = marked(value);
-  }, [value]);
+    ShowMarkRef.current.innerHTML = marked(content);
+  }, [content]);
 
   function handleSubmit() {
-    if (title && description && value) {
+    if (title && description && content) {
       post("/api/addBlog", {
         title,
         describe: description,
-        sort: type,
+        sort,
         author,
-        content: value
+        content
       }).then(res => {
         if (res.code === "Y") {
-          console.log("上传成功");
+          message.success("上传成功");
+          return
         }
+        message.warn("上传失败")
       });
     }
   }
 
   return (
     <>
-      <header key="header">
-        标题：
-        <input
-          type="text"
-          spellCheck="false"
-          onChange={v => {
-            setTltle(v.target.value);
-          }}
-        />
-        简述：
-        <input
-          type="text"
-          spellCheck="false"
-          onChange={v => {
-            setDescription(v.target.value);
-          }}
-        />
-        分类：
-        <input
-          type="text"
-          spellCheck="false"
-          onChange={v => {
-            setType(v.target.value);
-          }}
-        />
-        作者：
-        <input
-          type="text"
-          spellCheck="false"
-          onChange={v => {
-            setAuthor(v.target.value);
-          }}
-        />
-      </header>
-      <EdotorWrap key="main">
-        <TextInput
-          contentEditable="plaintext-only"
-          value={value}
-          onInput={v => {
-            setValue(v.target.innerText);
-          }}
-        ></TextInput>
-        <ShowMark id="showmark" ref={ShowMarkRef}></ShowMark>
+      <Form layout="inline">
+        <Form.Item label="标题">
+          <Input
+            onChange={v => {
+              setTltle(v.target.value);
+            }}
+          />
+        </Form.Item>
+        <Form.Item label="简述">
+          <Input
+            onChange={v => {
+              setDescription(v.target.value);
+            }}
+          />
+        </Form.Item>
+        <Form.Item label="分类">
+          <Input
+            onChange={v => {
+              setSort(v.target.value);
+            }}
+          />
+        </Form.Item>
+        <Form.Item label="作者">
+          <Input
+            onChange={v => {
+              setAuthor(v.target.value);
+            }}
+          />
+        </Form.Item>
+      </Form>
+      <EdotorWrap>
+        <Row gutter={12}>
+          <Col span={12}>
+            <TextInput
+              contentEditable="plaintext-only"
+              value={content}
+              onInput={v => {
+                setContent(v.target.innerText);
+              }}
+            />
+          </Col>
+          <Col span={12}>
+            <ShowMark id="showmark" ref={ShowMarkRef} />
+          </Col>
+        </Row>
       </EdotorWrap>
-      <button onClick={handleSubmit}>提交</button>
+      <div align="right">
+        <Button type="primary" onClick={handleSubmit}>
+          提交
+        </Button>
+      </div>
     </>
   );
 };
