@@ -39,4 +39,17 @@
       "last 1 safari version"
     ]
   }
+  "babel": {
+    "presets": [
+      "react-app"
+    ],
+    "plugins": [
+      [
+        "import": {
+          "libraryName": "antd",
+          "librayDirectory": "es",
+          "style": true
+        }
+      ]
+    ]
 }
