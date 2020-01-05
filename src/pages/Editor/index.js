@@ -3,6 +3,8 @@ import styled from "@emotion/styled";
 import marked from "marked";
 import { post } from "../../utils/request";
 import { Col, Row, Input, Form, Button, message } from "antd";
+import request from "../../utils/request";
+import { withRouter } from "react-router-dom";
 
 const EdotorWrap = styled.div`
   margin: 20px 0;
@@ -19,7 +21,7 @@ const ShowMark = styled.div`
   border: 1px solid #ccc;
 `;
 
-const Editor = props => {
+const Editor = ({ location }) => {
   const [content, setContent] = useState("");
   const [title, setTltle] = useState("");
   const [sort, setSort] = useState("");
@@ -30,6 +32,24 @@ const Editor = props => {
   useEffect(() => {
     ShowMarkRef.current.innerHTML = marked(content);
   }, [content]);
+
+  useEffect(() => {
+    const { state } = location;
+    if (state && state.id) {
+      request.get("/api/getBlog", { id: state.id }).then(res => {
+        if (res.code === "Y") {
+          const { data } = res;
+          setTltle(data.title);
+          setSort(data.sort);
+          setDescription(data.describe);
+          setAuthor(data.author);
+          setContent("sfsadfasdfasdf");
+          ShowMarkRef.current.innerHTML = marked(res.data.content);
+        } else {
+        }
+      });
+    }
+  }, []);
 
   function handleSubmit() {
     if (title && description && content) {
@@ -42,9 +62,9 @@ const Editor = props => {
       }).then(res => {
         if (res.code === "Y") {
           message.success("上传成功");
-          return
+          return;
         }
-        message.warn("上传失败")
+        message.warn("上传失败");
       });
     }
   }
@@ -54,6 +74,7 @@ const Editor = props => {
       <Form layout="inline">
         <Form.Item label="标题">
           <Input
+            value={title}
             onChange={v => {
               setTltle(v.target.value);
             }}
@@ -61,6 +82,7 @@ const Editor = props => {
         </Form.Item>
         <Form.Item label="简述">
           <Input
+            value={description}
             onChange={v => {
               setDescription(v.target.value);
             }}
@@ -68,6 +90,7 @@ const Editor = props => {
         </Form.Item>
         <Form.Item label="分类">
           <Input
+            value={sort}
             onChange={v => {
               setSort(v.target.value);
             }}
@@ -75,6 +98,7 @@ const Editor = props => {
         </Form.Item>
         <Form.Item label="作者">
           <Input
+            value={author}
             onChange={v => {
               setAuthor(v.target.value);
             }}
@@ -90,7 +114,9 @@ const Editor = props => {
               onInput={v => {
                 setContent(v.target.innerText);
               }}
-            />
+            >
+              {content}
+            </TextInput>
           </Col>
           <Col span={12}>
             <ShowMark id="showmark" ref={ShowMarkRef} />
@@ -106,4 +132,4 @@ const Editor = props => {
   );
 };
 
-export default Editor;
+export default withRouter(Editor);

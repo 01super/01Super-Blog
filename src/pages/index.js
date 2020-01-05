@@ -74,7 +74,12 @@ function App() {
             </Switch>
           </Content>
           <Footer style={{ textAlign: "center" }}>
-            Ant Design ©2018 Created by Ant UED
+            ©2019 - 01super -{" "}
+            <a href="http://www.beian.miit.gov.cn" target="_blank">
+              粤ICP备19026776号-1
+            </a>
+            <br />
+            Powered by golang & react/antd
           </Footer>
         </Layout>
       </Layout>

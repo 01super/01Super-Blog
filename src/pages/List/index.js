@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 import request from "../../utils/request";
-import { List, Avatar } from "antd";
+import { List, Avatar, Button, message } from "antd";
 
-const BlogList = props => {
+const BlogList = ({ history }) => {
   const [list, setList] = useState([]);
-  useEffect(() => {
+
+  function queryList() {
     request.get("api/getList").then(res => {
       if (res.code === "Y") {
         setList(res.data);
@@ -13,7 +14,29 @@ const BlogList = props => {
         setList([]);
       }
     });
+  }
+  useEffect(() => {
+    queryList();
   }, []);
+
+  function handleDelete(id) {
+    request.get("/api/deleteBlog", { id }).then(res => {
+      if (res.code === "Y") {
+        message.success("删除成功");
+        queryList();
+        return;
+      }
+      message.warn("删除失败");
+    });
+  }
+
+  function modifyBlog(id) {
+    history.push({
+      pathname: "/editor",
+      state: { id }
+    });
+  }
+
   return (
     <div>
       <List
@@ -26,9 +49,24 @@ const BlogList = props => {
                 <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
               }
               title={
-                <Link to={`/detial/${item.id}`}>
-                  {item.title}&nbsp;&nbsp;{item.author}
-                </Link>
+                <div>
+                  <Link to={`/detial/${item.id}`}>
+                    {item.title}&nbsp;&nbsp;{item.author}
+                  </Link>
+                  <span style={{ float: "right" }}>
+                    <Button size="small" onClick={() => modifyBlog(item.id)}>
+                      修改
+                    </Button>
+                    &nbsp;&nbsp;
+                    <Button
+                      size="small"
+                      type="danger"
+                      onClick={() => handleDelete(item.id)}
+                    >
+                      删除
+                    </Button>
+                  </span>
+                </div>
               }
               description={item.describe}
             />
@@ -39,4 +77,4 @@ const BlogList = props => {
   );
 };
 
-export default BlogList;
+export default withRouter(BlogList);
